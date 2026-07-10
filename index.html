@@ -74,22 +74,19 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
     'llama-3b':  { id: 'Llama-3.2-3B-Instruct-q4f16_1-MLC',   size: '~2GB',   label: '3B · balanced · default · most laptops' },
     'qwen-7b':   { id: 'Qwen2.5-7B-Instruct-q4f16_1-MLC',     size: '~5GB',   label: '7B · capable · needs decent GPU (M-series Mac / 8GB+ VRAM)' },
     'llama-8b':  { id: 'Llama-3.1-8B-Instruct-q4f16_1-MLC',   size: '~5GB',   label: '8B · common · needs decent GPU' },
-    'llama-70b': { id: 'Llama-3.1-70B-Instruct-q4f16_1-MLC',  size: '~40GB',  label: '70B · frontier · needs serious GPU + 64GB+ RAM' },
-  };
+    'llama-70b': { id: 'Llama-3.1-70B-Instruct-q4f16_1-MLC',  size: '~40GB',  label: '70B · frontier · needs serious GPU + 64GB+ RAM' }};
   const DEFAULT_MODEL = 'llama-3b';
 
   const T3_PROVIDERS = {
     anthropic: { label: 'Anthropic Claude', models: ['claude-sonnet-4-5','claude-opus-4-7','claude-haiku-4-5'], default: 'claude-sonnet-4-5', url: 'https://api.anthropic.com/v1/messages' },
     openai:    { label: 'OpenAI',           models: ['gpt-4o','gpt-4o-mini','o1-mini'],                          default: 'gpt-4o-mini',      url: 'https://api.openai.com/v1/chat/completions' },
-    google:    { label: 'Google Gemini',    models: ['gemini-1.5-pro','gemini-1.5-flash','gemini-2.0-flash-exp'], default: 'gemini-1.5-flash', url: 'https://generativelanguage.googleapis.com/v1beta/models/' },
-  };
+    google:    { label: 'Google Gemini',    models: ['gemini-1.5-pro','gemini-1.5-flash','gemini-2.0-flash-exp'], default: 'gemini-1.5-flash', url: 'https://generativelanguage.googleapis.com/v1beta/models/' }};
 
   // ─── State ───────────────────────────────────────────────────────
   const STATE = {
     config: loadConfig(),
     ai: { ready: false, loading: false, progress: 0, engine: null, model: null },
-    mesh: { active: false, peers: new Map(), bc: null, signal: null },
-  };
+    mesh: { active: false, peers: new Map(), bc: null, signal: null }};
 
   function loadConfig() {
     try { return JSON.parse(localStorage.getItem('fall-kit.config') || '{}'); }
@@ -156,8 +153,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
     if (tier === 'T2' && STATE.ai.ready && STATE.ai.engine) {
       const r = await STATE.ai.engine.chat.completions.create({
         messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userMsg }],
-        max_tokens: maxTokens,
-      });
+        max_tokens: maxTokens});
       return r.choices[0].message.content;
     }
     if (tier === 'T3' && STATE.config.api_key && STATE.config.api_provider) {
@@ -174,8 +170,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
       const r = await fetch(T3_PROVIDERS.anthropic.url, {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model, max_tokens: maxTokens, system: sys, messages: [{ role: 'user', content: msg }] }),
-      });
+        body: JSON.stringify({ model, max_tokens: maxTokens, system: sys, messages: [{ role: 'user', content: msg }] })});
       if (!r.ok) throw new Error('Anthropic ' + r.status + ': ' + (await r.text()).slice(0, 200));
       const j = await r.json();
       return j.content[0].text;
@@ -184,8 +179,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
       const r = await fetch(T3_PROVIDERS.openai.url, {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'Authorization': 'Bearer ' + key },
-        body: JSON.stringify({ model, max_tokens: maxTokens, messages: [{ role: 'system', content: sys }, { role: 'user', content: msg }] }),
-      });
+        body: JSON.stringify({ model, max_tokens: maxTokens, messages: [{ role: 'system', content: sys }, { role: 'user', content: msg }] })});
       if (!r.ok) throw new Error('OpenAI ' + r.status);
       const j = await r.json();
       return j.choices[0].message.content;
@@ -194,8 +188,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
       const r = await fetch(T3_PROVIDERS.google.url + model + ':generateContent?key=' + encodeURIComponent(key), {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: sys + '\n\n---\n\n' + msg }] }], generationConfig: { maxOutputTokens: maxTokens } }),
-      });
+        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: sys + '\n\n---\n\n' + msg }] }], generationConfig: { maxOutputTokens: maxTokens } })});
       if (!r.ok) throw new Error('Google ' + r.status);
       const j = await r.json();
       return j.candidates[0].content.parts[0].text;
@@ -436,8 +429,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
     openMint: openMint,  // v1.2 · launch kcc-mint with this seed prefilled as parent
     MODELS: WEBLLM_MODELS,
     PROVIDERS: T3_PROVIDERS,
-    state: STATE,
-  };
+    state: STATE};
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
@@ -475,30 +467,26 @@ const TEMPLATE_DEFS=[
     {id:'patient',name:'Patient Details',locked:false,text:'**Patient:** {{patient.name}}\n**DOB:** {{patient.dob}} · **NHS:** {{patient.nhsNumber}}\n**Address:** {{patient.address}}'},
     {id:'clinical',name:'Clinical Summary',locked:false,text:'**Presenting complaint:**\n{{ctx.presentingComplaint}}\n\n**History of presenting complaint:**\n{{ctx.hpc}}\n\n**Relevant past medical history:**\n{{ctx.pmh}}\n\n**Current medications:**\n{{ctx.medications}}\n\n**Allergies:**\n{{ctx.allergies}}\n\n**Examination findings:**\n{{ctx.examination}}\n\n**Investigations to date:**\n{{ctx.investigations}}'},
     {id:'request',name:'Request',locked:false,text:'**Reason for referral:**\n{{ctx.reasonForReferral}}\n\n**Specific questions:**\n{{ctx.questions}}'},
-    {id:'footer',name:'Footer',locked:true,text:'This referral has been made with the patient\'s informed consent. Please contact the referring clinician if further information is required.\n\nThis letter contains confidential patient information and is intended for the named recipient only.'},
-   ]},
+    {id:'footer',name:'Footer',locked:true,text:'This referral has been made with the patient\'s informed consent. Please contact the referring clinician if further information is required.\n\nThis letter contains confidential patient information and is intended for the named recipient only.'}]},
   {id:'clinic-letter',name:'Clinic Letter',code:'CL-01',cat:'clinical',desc:'Post-consultation letter to GP / referrer',
    sections:[
     {id:'header',name:'Header',locked:false,text:'**CLINIC LETTER**\n\nDate: {{ctx.date}}\n\n{{practice.name}}\n{{practice.address}}\n\nDear {{ctx.recipientName}},\n\nRe: {{patient.name}}, DOB: {{patient.dob}}, NHS: {{patient.nhsNumber}}'},
     {id:'body',name:'Body',locked:false,text:'Thank you for referring this patient who attended clinic on {{ctx.clinicDate}}.\n\n**Presenting complaint:** {{ctx.presentingComplaint}}\n\n**Examination:** {{ctx.examination}}\n\n**Diagnosis / Impression:** {{ctx.diagnosis}}\n\n**Plan:**\n{{ctx.plan}}'},
-    {id:'footer',name:'Footer',locked:false,text:'I will review this patient in {{ctx.followUp}}. Please do not hesitate to contact me if you have any concerns.\n\nYours sincerely,\n\n{{ctx.clinician}}\n{{ctx.clinicianTitle}}'},
-   ]},
+    {id:'footer',name:'Footer',locked:false,text:'I will review this patient in {{ctx.followUp}}. Please do not hesitate to contact me if you have any concerns.\n\nYours sincerely,\n\n{{ctx.clinician}}\n{{ctx.clinicianTitle}}'}]},
   {id:'discharge',name:'Discharge Summary',code:'DS-01',cat:'clinical',desc:'Inpatient/day-case discharge summary',
    sections:[
     {id:'header',name:'Header',locked:false,text:'**DISCHARGE SUMMARY**\n\nDate of discharge: {{ctx.dischargeDate}}\nDate of admission: {{ctx.admissionDate}}\nLength of stay: {{ctx.los}} days\n\n**Patient:** {{patient.name}}\n**DOB:** {{patient.dob}} · **NHS:** {{patient.nhsNumber}}\n**Ward:** {{ctx.ward}} · **Consultant:** {{ctx.consultant}}'},
     {id:'diagnosis',name:'Diagnoses',locked:false,text:'**Primary diagnosis:** {{ctx.primaryDiagnosis}}\n\n**Secondary diagnoses:**\n{{ctx.secondaryDiagnoses}}'},
     {id:'summary',name:'Clinical Summary',locked:false,text:'**Reason for admission:**\n{{ctx.reasonForAdmission}}\n\n**Key investigations:**\n{{ctx.investigations}}\n\n**Procedures performed:**\n{{ctx.procedures}}\n\n**Summary of inpatient stay:**\n{{ctx.inpatientSummary}}'},
     {id:'discharge-plan',name:'Discharge Plan',locked:false,text:'**Discharge medications:**\n{{ctx.dischargeMeds}}\n\n**Changes to regular medications:**\n{{ctx.medChanges}}\n\n**Follow-up:**\n{{ctx.followUp}}\n\n**GP actions required:**\n{{ctx.gpActions}}'},
-    {id:'safety',name:'Safety Netting',locked:true,text:'The patient has been advised to seek urgent medical attention if:\n- Symptoms recur or worsen\n- New symptoms develop\n- They have concerns about their condition\n\nDischarge information leaflet provided: {{ctx.leafletProvided}}'},
-   ]},
+    {id:'safety',name:'Safety Netting',locked:true,text:'The patient has been advised to seek urgent medical attention if:\n- Symptoms recur or worsen\n- New symptoms develop\n- They have concerns about their condition\n\nDischarge information leaflet provided: {{ctx.leafletProvided}}'}]},
   {id:'prescription',name:'Prescription (FP10)',code:'RX-01',cat:'prescribing',desc:'NHS prescription form — FP10 equivalent',
    sections:[
     {id:'header',name:'Prescriber',locked:false,text:'**NHS PRESCRIPTION**\n\n**Prescriber:** {{ctx.prescriber}}\n**GMC/GPhC:** {{ctx.prescriberReg}}\n**Practice:** {{practice.name}}\n**Address:** {{practice.address}}'},
     {id:'patient',name:'Patient',locked:false,text:'**Patient:** {{patient.name}}\n**DOB:** {{patient.dob}} · **NHS:** {{patient.nhsNumber}}\n**Address:** {{patient.address}}'},
     {id:'items',name:'Prescription Items',locked:false,text:'{{ctx.item1}}\n{{ctx.item2}}\n{{ctx.item3}}\n{{ctx.item4}}'},
     {id:'prescribing-note',name:'Prescribing Note',locked:true,text:'This prescription is issued in accordance with the Human Medicines Regulations 2012. The prescriber has assessed the patient and determined that the prescribed medication(s) are clinically appropriate.\n\nAllergies checked: {{ctx.allergiesChecked}}\nInteractions checked: {{ctx.interactionsChecked}}\n\nControlled drug prescriptions must comply with the Misuse of Drugs Regulations 2001: quantity in words and figures, form, strength, dose, total quantity.'},
-    {id:'sig',name:'Signature',locked:false,text:'Date: {{ctx.date}}\n[SIGNATURE_BLOCK]'},
-   ]},
+    {id:'sig',name:'Signature',locked:false,text:'Date: {{ctx.date}}\n[SIGNATURE_BLOCK]'}]},
   {id:'fit-note',name:'Fit Note (Med3)',code:'MED3-01',cat:'occupational',desc:'Statement of Fitness for Work',
    sections:[
     {id:'header',name:'Header',locked:true,text:'**STATEMENT OF FITNESS FOR WORK**\nFor social security and Statutory Sick Pay purposes\n\n**Patient:** {{patient.name}}\n**NHS:** {{patient.nhsNumber}}'},
@@ -506,41 +494,34 @@ const TEMPLATE_DEFS=[
     {id:'advice',name:'Advice',locked:false,text:'If available, and with your employer\'s agreement, you may benefit from:\n\n☐ A phased return to work\n☐ Altered hours\n☐ Amended duties\n☐ Workplace adaptations\n\nComments: {{ctx.comments}}'},
     {id:'duration',name:'Duration',locked:false,text:'This will be the case from: {{ctx.fromDate}} to: {{ctx.toDate}}\n\nOr from: {{ctx.fromDate}} for: {{ctx.duration}}'},
     {id:'legal',name:'Legal',locked:true,text:'This statement is issued under the Social Security (Medical Evidence) Regulations 1976 (as amended). It is based on an assessment of the patient\'s fitness for work. The doctor is not required to assess the patient\'s fitness for a specific job.\n\nThe patient does not need to be seen again to return to work before the end date.'},
-    {id:'sig',name:'Signature',locked:false,text:'Doctor\'s signature:\nDate: {{ctx.date}}\nDoctor\'s address: {{practice.address}}\n[SIGNATURE_BLOCK]'},
-   ]},
+    {id:'sig',name:'Signature',locked:false,text:'Doctor\'s signature:\nDate: {{ctx.date}}\nDoctor\'s address: {{practice.address}}\n[SIGNATURE_BLOCK]'}]},
   {id:'consent-form',name:'Consent Form',code:'CON-01',cat:'consent',desc:'Informed consent for treatment/procedure',
    sections:[
     {id:'header',name:'Header',locked:false,text:'**CONSENT FORM**\n\n**Patient:** {{patient.name}}\n**DOB:** {{patient.dob}} · **NHS:** {{patient.nhsNumber}}\n**Date:** {{ctx.date}}'},
     {id:'procedure',name:'Procedure',locked:false,text:'**Proposed procedure / treatment:**\n{{ctx.procedure}}\n\n**Intended benefits:**\n{{ctx.benefits}}\n\n**Risks (including common and serious):**\n{{ctx.risks}}\n\n**Alternatives considered:**\n{{ctx.alternatives}}'},
     {id:'consent-statement',name:'Consent Statement',locked:true,text:'I confirm that:\n\n1. I have been given an explanation of the proposed procedure, including the risks, benefits, and alternatives\n2. I have had the opportunity to ask questions and have them answered to my satisfaction\n3. I understand that I may withdraw consent at any time before the procedure\n4. I give consent to the procedure described above\n\nI understand that the procedure may need to be modified during its course if clinically necessary. I give consent to any additional procedures that may be necessary to deal with unexpected findings or complications.\n\nThis consent is given voluntarily and without duress.'},
-    {id:'sigs',name:'Signatures',locked:false,text:'[SIGNATURE_BLOCK]'},
-   ]},
+    {id:'sigs',name:'Signatures',locked:false,text:'[SIGNATURE_BLOCK]'}]},
   {id:'dnar',name:'DNAR / ReSPECT',code:'DNAR-01',cat:'end-of-life',desc:'Do Not Attempt Resuscitation / ReSPECT form',
    sections:[
     {id:'header',name:'Header',locked:false,text:'**DNACPR / ReSPECT DECISION**\n\n**Patient:** {{patient.name}}\n**DOB:** {{patient.dob}} · **NHS:** {{patient.nhsNumber}}\n**Date of decision:** {{ctx.decisionDate}}'},
     {id:'decision',name:'Decision',locked:false,text:'**Decision:**\nIn the event of cardiorespiratory arrest, cardiopulmonary resuscitation (CPR) should NOT be attempted.\n\n**Clinical basis for decision:**\n{{ctx.clinicalBasis}}\n\n**Patient\'s wishes / values:**\n{{ctx.patientWishes}}'},
     {id:'capacity',name:'Capacity & Discussion',locked:true,text:'Mental Capacity Act 2005 applies to this decision:\n\n1. Does the patient have capacity to participate in this decision?\n   {{ctx.hasCapacity}}\n\n2. If yes: has the decision been discussed with the patient?\n   This decision has been made in consultation with the patient / their representative.\n\n3. If no: has a best interest decision been made?\n   A best interest decision has been made in accordance with MCA 2005 s.4.\n\n4. LPA (Health & Welfare) consulted: {{ctx.lpaConsulted}}\n\nThis decision does not override any valid Advance Decision to Refuse Treatment (ADRT) under MCA 2005 ss.24-26.'},
-    {id:'review',name:'Review',locked:false,text:'**Review date:** {{ctx.reviewDate}}\n**Senior clinician responsible:** {{ctx.seniorClinician}}\n**GMC number:** {{ctx.gmcNumber}}'},
-   ]},
+    {id:'review',name:'Review',locked:false,text:'**Review date:** {{ctx.reviewDate}}\n**Senior clinician responsible:** {{ctx.seniorClinician}}\n**GMC number:** {{ctx.gmcNumber}}'}]},
   {id:'death-cert',name:'Medical Certificate of Cause of Death',code:'MCCD-01',cat:'end-of-life',desc:'MCCD — Births and Deaths Registration Act 1953',
    sections:[
     {id:'header',name:'Header',locked:true,text:'**MEDICAL CERTIFICATE OF CAUSE OF DEATH**\nBirths and Deaths Registration Act 1953\n\n**Deceased:** {{patient.name}}\n**Date of death:** {{ctx.dateOfDeath}}\n**Place of death:** {{ctx.placeOfDeath}}\n**Age at death:** {{ctx.ageAtDeath}}'},
     {id:'cause',name:'Cause of Death',locked:false,text:'**I(a)** Disease or condition directly leading to death:\n{{ctx.causeIa}}\n\n**I(b)** Due to (or as a consequence of):\n{{ctx.causeIb}}\n\n**I(c)** Due to (or as a consequence of):\n{{ctx.causeIc}}\n\n**II** Other significant conditions contributing to death but not related to the cause given in I:\n{{ctx.causeII}}'},
     {id:'certifier',name:'Certifier',locked:false,text:'**Certifying doctor:** {{ctx.certifyingDoctor}}\n**GMC number:** {{ctx.gmcNumber}}\n**Qualifications:** {{ctx.qualifications}}\n\nI was the deceased\'s: {{ctx.relationship}}\n\nI last saw the deceased alive on: {{ctx.lastSeenAlive}}\n\nThe cause of death was: {{ctx.seenAfterDeath}}'},
-    {id:'referral-note',name:'Coroner Referral',locked:true,text:'The death must be referred to the coroner if:\n- Cause of death is unknown\n- Death was violent or unnatural\n- Death occurred during an operation or before recovery from anaesthetic\n- Death occurred in custody or state detention\n- Death was sudden and unexplained\n- The deceased was not seen by a doctor within 28 days before death or after death\n- A MCCD cannot be issued\n\nCoroners and Justice Act 2009 applies.'},
-   ]},
+    {id:'referral-note',name:'Coroner Referral',locked:true,text:'The death must be referred to the coroner if:\n- Cause of death is unknown\n- Death was violent or unnatural\n- Death occurred during an operation or before recovery from anaesthetic\n- Death occurred in custody or state detention\n- Death was sudden and unexplained\n- The deceased was not seen by a doctor within 28 days before death or after death\n- A MCCD cannot be issued\n\nCoroners and Justice Act 2009 applies.'}]},
   {id:'sick-note',name:'Private Sick Note',code:'SN-01',cat:'occupational',desc:'Private medical certificate for employer',
    sections:[
-    {id:'body',name:'Certificate',locked:false,text:'**PRIVATE MEDICAL CERTIFICATE**\n\nDate: {{ctx.date}}\n\nTo whom it may concern,\n\nThis is to certify that {{patient.name}} (DOB: {{patient.dob}}) attended this practice on {{ctx.attendanceDate}}.\n\nIn my opinion, {{ctx.pronoun}} is / was unfit for work from {{ctx.fromDate}} to {{ctx.toDate}} due to {{ctx.reason}}.\n\nThis certificate is issued privately and a fee of {{ctx.fee}} applies.\n\n{{ctx.clinician}}\n{{practice.name}}\n{{practice.address}}'},
-   ]},
+    {id:'body',name:'Certificate',locked:false,text:'**PRIVATE MEDICAL CERTIFICATE**\n\nDate: {{ctx.date}}\n\nTo whom it may concern,\n\nThis is to certify that {{patient.name}} (DOB: {{patient.dob}}) attended this practice on {{ctx.attendanceDate}}.\n\nIn my opinion, {{ctx.pronoun}} is / was unfit for work from {{ctx.fromDate}} to {{ctx.toDate}} due to {{ctx.reason}}.\n\nThis certificate is issued privately and a fee of {{ctx.fee}} applies.\n\n{{ctx.clinician}}\n{{practice.name}}\n{{practice.address}}'}]},
   {id:'med-report',name:'Medical Report (Access to Medical Reports Act)',code:'MR-01',cat:'occupational',desc:'Medical report for employer/insurer under AMRA 1988',
    sections:[
     {id:'header',name:'Header',locked:false,text:'**MEDICAL REPORT**\nAccess to Medical Reports Act 1988\n\nDate: {{ctx.date}}\nRequested by: {{ctx.requestedBy}}\n\n**Patient:** {{patient.name}}\n**DOB:** {{patient.dob}} · **NHS:** {{patient.nhsNumber}}'},
     {id:'consent-amra',name:'AMRA Consent',locked:true,text:'This report is prepared under the Access to Medical Reports Act 1988.\n\nThe patient has been informed of:\n1. Their right to consent to the report being supplied\n2. Their right to see the report before it is supplied\n3. Their right to request amendments\n4. Their right to withhold consent to the report being supplied\n\nPatient consent obtained: {{ctx.consentObtained}}\nPatient wishes to see report before supply: {{ctx.wantsToSeeReport}}'},
     {id:'report',name:'Report',locked:false,text:'**Relevant medical history:**\n{{ctx.medicalHistory}}\n\n**Current conditions:**\n{{ctx.currentConditions}}\n\n**Current treatment:**\n{{ctx.currentTreatment}}\n\n**Prognosis:**\n{{ctx.prognosis}}\n\n**Functional capacity:**\n{{ctx.functionalCapacity}}'},
-    {id:'sig',name:'Signature',locked:false,text:'{{ctx.clinician}}\n{{ctx.gmcNumber}}\n{{practice.name}}\n\n[SIGNATURE_BLOCK]'},
-   ]},
-];
+    {id:'sig',name:'Signature',locked:false,text:'{{ctx.clinician}}\n{{ctx.gmcNumber}}\n{{practice.name}}\n\n[SIGNATURE_BLOCK]'}]}];
 
 let state={active:'templates',firm:null,patients:[],documents:[],audit:[],
   ui:{selectedTemplate:null,selectedPatient:null,editingSections:{},extraContext:'',chat:[]},
@@ -574,7 +555,7 @@ function buildContext(){
 }
 function resolveText(text,ctx){return text.replace(/\{\{([^}]+)\}\}/g,(_,key)=>{const v=ctx[key.trim()];return v!=null&&v!==''?String(v):`<span class="placeholder-empty">{{${key.trim()}}}</span>`})}
 function renderPaper(tpl,ctx,sections){const rendered=sections.map(s=>{const text=state.ui.editingSections?.[s.id]??s.text;const html=resolveText(text,ctx);if(s.locked)return `<div class="clause-locked">${mdBasic(html)}</div>`;return mdBasic(html)}).join('\n');return `<div class="doc-meta">${esc(tpl.name)} · ${esc(tpl.code)} · ${TOOLNAME} · ${dateStr(now())}</div>\n${rendered}`}
-function mdBasic(md){return md.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n\n/g,'</p><p>').replace(/\n(\d+\.\s)/g,'<br>$1').replace(/\n-\s/g,'<br>• ').replace(/☐/g,'<span style="font-size:16px">☐</span>').replace(/\[SIGNATURE_BLOCK\]/g,'<div class="sig-block"><div><div class="sig-line"></div>Signed (Clinician)</div><div><div class="sig-line"></div>Signed (Patient)</div></div>').replace(/^/,'<p>').replace(/$/,'</p>')}
+function mdBasic(md){return md.replace(/\*\*(.+?)\*\*/g,'<strong>TBA</strong>').replace(/\n\n/g,'</p><p>').replace(/\n(\d+\.\s)/g,'<br>TBA').replace(/\n-\s/g,'<br>• ').replace(/☐/g,'<span style="font-size:16px">☐</span>').replace(/\[SIGNATURE_BLOCK\]/g,'<div class="sig-block"><div><div class="sig-line"></div>Signed (Clinician)</div><div><div class="sig-line"></div>Signed (Patient)</div></div>').replace(/^/,'<p>').replace(/$/,'</p>')}
 
 function render(){renderTabs();const v=$('#view');switch(state.active){case 'templates':return renderTemplates(v);case 'generate':return renderGenerate(v);case 'documents':return renderDocuments(v);case 'practice':return renderPractice(v);case 'patients':return renderPatients(v);case 'qa':return renderQA(v)}}
 function renderTabs(){$('#tabNav').innerHTML=TABS.map(t=>`<button class="${state.active===t.id?'active':''}" onclick="switchTab('${t.id}')">${t.label}</button>`).join('')}
@@ -642,8 +623,7 @@ const T0_QA=[
   {q:/dnar|dnacpr|respect|resuscitation/i,a:'DNACPR: clinical decision about whether CPR would be successful or in the patient\'s best interest. ReSPECT: broader emergency care plan including CPR decision. Must be discussed with patient (if capacity) or LPA/family. Not the same as withdrawing treatment. MCA 2005 applies. Valid ADRT takes precedence. Review regularly. Tracey v Cambridge [2014] — duty to consult patient/family.'},
   {q:/discharge|summary|handover/i,a:'Discharge summary (NICE QS174): must include diagnosis, procedures, medications (including changes), follow-up plan, GP actions, safety netting. Send within 24 hours of discharge. Medication reconciliation at discharge (NICE NG5). Include allergies. Copies to GP and patient.'},
   {q:/death.?cert|mccd|coroner/i,a:'MCCD (Medical Certificate of Cause of Death): issued by doctor who attended the deceased during last illness. Must refer to coroner if: unknown cause, violent/unnatural, during operation, in custody, sudden/unexplained, not seen by doctor within 28 days. Births and Deaths Registration Act 1953. Death must be registered within 5 days. Medical examiner scrutiny introduced 2024.'},
-  {q:/medical.?report|amra|access/i,a:'Access to Medical Reports Act 1988: patient must consent before employer/insurer can request medical report. Patient has right to see report before supply, request amendments, withhold consent. Separate from Subject Access Request (SAR) under GDPR. Report should be factual and relevant to the request. Fee chargeable (BMA guidance on fees).'},
-];
+  {q:/medical.?report|amra|access/i,a:'Access to Medical Reports Act 1988: patient must consent before employer/insurer can request medical report. Patient has right to see report before supply, request amendments, withhold consent. Separate from Subject Access Request (SAR) under GDPR. Report should be factual and relevant to the request. Fee chargeable (BMA guidance on fees).'}];
 function askT0(q){for(const r of T0_QA){if(r.q.test(q))return {answer:r.a,source:'T0 · UK clinical document rules'}}return null}
 async function askT3(q){if(!state.settings.anthropicKey)return null;try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'x-api-key':state.settings.anthropicKey,'anthropic-version':'2023-06-01','content-type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:'You are a UK clinical documentation expert. GMC, NHS, prescribing, consent, referrals. Concise.\n\n'+q}]})});if(!res.ok)return null;const j=await res.json();return {answer:j.content?.[0]?.text,source:'T3 · Anthropic'}}catch(e){return null}}
 function renderQA(v){v.innerHTML=`<div class="section-h"><h2>Q & A</h2><div class="sub">T0 + T3 BYOK</div></div><div class="card" style="max-width:780px"><div class="chat" id="chatBox">${(state.ui.chat||[]).map(m=>`<div class="msg ${m.role}">${esc(m.text)}${m.source?`<div class="src">${esc(m.source)}</div>`:''}</div>`).join('')}</div><div class="chat-input"><input id="chatIn" placeholder="Ask… 'FP10 requirements?' · 'Fit note rules?' · 'DNACPR guidance?'" onkeydown="if(event.key==='Enter')askQuestion()"><button class="btn brass" onclick="askQuestion()">Ask</button></div></div>`;const box=$('#chatBox');if(box)box.scrollTop=box.scrollHeight}
