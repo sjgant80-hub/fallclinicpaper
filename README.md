@@ -39,4 +39,4 @@ Generate, preview, and issue UK clinical documents from 10 templates. Locked reg
 
 ## Licence
 
-MIT · Simon Gant · prime 937 · ◊·κ=1.
+MIT · Simon Gant.
